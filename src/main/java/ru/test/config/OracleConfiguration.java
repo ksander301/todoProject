@@ -15,7 +15,6 @@ import java.sql.SQLException;
 
 @Configuration
 @ConfigurationProperties("oracle")
-
 public class OracleConfiguration {
 
 

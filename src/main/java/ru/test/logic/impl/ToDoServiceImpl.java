@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 import ru.test.dao.ToDoDAO;
 import ru.test.logic.ToDoService;
 import ru.test.model.ToDo;
+import ru.test.model.wrapper.ToDoList;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class ToDoServiceImpl implements ToDoService{
+public class ToDoServiceImpl implements ToDoService {
 
     @Autowired
     public ToDoDAO toDoDAO;
@@ -21,7 +23,7 @@ public class ToDoServiceImpl implements ToDoService{
     }
 
     @Override
-    public List<ToDo> getAllToDo() {
+    public ToDoList getAllToDo() {
         return this.toDoDAO.getAllToDo();
     }
 
@@ -31,7 +33,7 @@ public class ToDoServiceImpl implements ToDoService{
     }
 
     @Override
-    public List<ToDo> getToDoByAlertDate(Date alertDate) {
+    public List<ToDo> getToDoByAlertDate(LocalDate alertDate) {
         return this.toDoDAO.getToDoByAlertDate(alertDate);
     }
 }

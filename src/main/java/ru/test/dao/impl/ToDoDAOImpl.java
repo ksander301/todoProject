@@ -1,22 +1,19 @@
 package ru.test.dao.impl;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.SqlParameterValue;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import ru.test.dao.details.ToDoResultSetExtractor;
 import ru.test.dao.details.ToDoRowMapper;
 import ru.test.dao.ToDoDAO;
 import ru.test.model.ToDo;
+import ru.test.model.wrapper.ToDoList;
 
-import java.sql.Types;
-import java.util.Date;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.TimeZone;
 
 @Repository
 /*@ComponentScan(basePackages = {"ru.test.config", "ru.test.dao", "ru.test.logic", "ru.test.model"})
@@ -32,17 +29,20 @@ public class ToDoDAOImpl implements ToDoDAO {
     private JdbcTemplate jdbcTemplate;
 
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public ToDo getToDoById(Long id) {
 
-        ToDo toDo = this.jdbcTemplate.queryForObject(QUERY_BY_ID, new Object[]{id}, ToDo.class);
+        ToDo toDo = this.jdbcTemplate.query(QUERY_BY_ID, new Object[]{id}, new ToDoResultSetExtractor());
+
+
         return toDo;
     }
 
     @Override
-    public List<ToDo> getAllToDo() {
+    public ToDoList getAllToDo() {
 
         List<ToDo> toDos = this.jdbcTemplate.query(QUERY_ALL, new ToDoRowMapper());
-        return toDos;
+        return new ToDoList(toDos);
     }
 
     @Override
@@ -53,7 +53,8 @@ public class ToDoDAOImpl implements ToDoDAO {
     }
 
     @Override
-    public List<ToDo> getToDoByAlertDate(Date alertDate) {
+    public List<ToDo> getToDoByAlertDate(LocalDate alertDate) {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
         List<ToDo> toDos = this.jdbcTemplate.query(QUERY_BY_ALERTDATE, new Object[]{alertDate}, new ToDoRowMapper());
         return toDos;
